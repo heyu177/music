@@ -130,10 +130,7 @@
     </div>
 </body>
 <script type="text/javascript" src="js/tools.js"></script>
-<<<<<<< HEAD
-=======
 <script type="text/javascript" src="js/damu.js"></script>
->>>>>>> 8285e430c051d8976f3b71647abb4ba1254e94b5
 <script type="text/javascript">
     window.onload=function(){
         document.addEventListener('touchstart',function(ev){
@@ -161,6 +158,7 @@
                 var touchC=ev.changedTouches[0];
                 startX=touchC.clientX;
                 elementX=damu.css(item,"translateX");
+                item.style.transition="none";
             });
             wrap.addEventListener("touchmove",function(ev){
                 var touchC=ev.changedTouches[0];
@@ -175,9 +173,23 @@
                     // translateX=0;
                 } else if (translateX<minX) {
                     // translateX=minX;
+                    var over=minX-translateX;
+                    var scale=document.documentElement.clientWidth/(document.documentElement.clientWidth+over);
+                    translateX=elementX+disX*scale;
                 } 
                 damu.css(item,"translateX",translateX);
-            })
+            });
+            wrap.addEventListener("touchend",function(ev){
+                var translateX=damu.css(item,"translateX");
+                item.style.transition="1s transform";
+                if (translateX>0) {
+                    translateX=0;
+                    damu.css(item,"translateX",translateX);
+                }else if (translateX<minX) {
+                    translateX=minX;
+                    damu.css(item,"translateX",translateX);
+                }
+            });
         }
 
         changeFocus();
