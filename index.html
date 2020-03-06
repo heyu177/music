@@ -130,6 +130,10 @@
     </div>
 </body>
 <script type="text/javascript" src="js/tools.js"></script>
+<<<<<<< HEAD
+=======
+<script type="text/javascript" src="js/damu.js"></script>
+>>>>>>> 8285e430c051d8976f3b71647abb4ba1254e94b5
 <script type="text/javascript">
     window.onload=function(){
         document.addEventListener('touchstart',function(ev){
@@ -141,6 +145,40 @@
             styleNode.innerHTML='html{font-size:'+w+'px!important}'
             document.head.appendChild(styleNode)
         })();
+
+        drag();
+        function drag(){
+            var wrap=document.querySelector("#wrap .content .nav");
+            var item=document.querySelector("#wrap .content .nav .list");
+
+            //手指一开始的位置
+            var startX=0;
+            // 元素的初始位置
+            var elementX=0;
+            // ul的translateX样式的最小值
+            var minX=wrap.clientWidth-item.offsetWidth;
+            wrap.addEventListener("touchstart",function(ev){
+                var touchC=ev.changedTouches[0];
+                startX=touchC.clientX;
+                elementX=damu.css(item,"translateX");
+            });
+            wrap.addEventListener("touchmove",function(ev){
+                var touchC=ev.changedTouches[0];
+                var nowX=touchC.clientX;
+                disX=nowX-startX;
+                var translateX=elementX+disX;
+                // 橡皮筋效果
+                if (translateX>0) {
+                    // var scale=1-translateX/document.documentElement.clientWidth;
+                    var scale=document.documentElement.clientWidth/(document.documentElement.clientWidth+translateX);
+                    translateX=elementX+disX*scale;
+                    // translateX=0;
+                } else if (translateX<minX) {
+                    // translateX=minX;
+                } 
+                damu.css(item,"translateX",translateX);
+            })
+        }
 
         changeFocus();
         function changeFocus(){

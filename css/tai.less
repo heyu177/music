@@ -120,7 +120,7 @@ img{
             }
         }
         .mask{
-            .px-1(deeppink);
+            .px-1(top,deeppink);
             position: absolute;
             left: 0;
             top: 135/@rem;
@@ -128,6 +128,7 @@ img{
             width: 100%;
             background: rgba(0, 0, 0, 0.8);
             display: none;
+            z-index: 1;
             & > li{
                 width: 22.5%;
                 height: 135/@rem;
@@ -149,10 +150,35 @@ img{
         right: 0;
         bottom: 0;
         .nav{
+            .px-1(bottom);
             width: 100%;
             height: 177/@rem;
             box-sizing: border-box;
             padding: 31/@rem 0 14/@rem 0;
+            background: #eee;
+            .list{
+                //使内容水平排列
+                white-space: nowrap;
+                font-size: 0;
+                // 使ul的宽度被内容撑开，不受父元素的约束
+                float: left;
+                & > li{
+                    height: 129/@rem;
+                    line-height: 129/@rem;
+                    padding: 0 38/@rem;
+                    font-size: 1rem;
+                    display: inline-block;
+                    a{
+                        color: #020202;
+                    }
+                    &.active{
+                        background: #690;
+                        a{
+                            color: #fff;
+                        }
+                    }
+                }
+            }
         }
     }
 }
