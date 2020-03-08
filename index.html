@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no,minimum-scale=1.0,maximum=1.0">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0,user-scalable=no,minimum-scale=1.0,maximum=1.0">
     <title>Document</title>
     <link rel="stylesheet" type="text/css" href="css/tai.css" />
 </head>
+
 <body>
     <div id="wrap">
         <div class="head">
@@ -13,7 +16,7 @@
                 <!-- logo -->
                 <h1 class="logo">
                     <a href="http://www.atguigu.com">
-                        <img src="img/logo.png"/>
+                        <img src="img/logo.png" />
                     </a>
                 </h1>
                 <!-- 面包屑导航 -->
@@ -27,8 +30,8 @@
             </div>
             <div class="head-bottom">
                 <form method="POST">
-                    <input type="text" placeholder="请碰我一下"/>
-                    <input type="submit" value="搜索"/>
+                    <input type="text" placeholder="请碰我一下" />
+                    <input type="submit" value="搜索" />
                 </form>
             </div>
             <ul class="mask">
@@ -132,70 +135,103 @@
 <script type="text/javascript" src="js/tools.js"></script>
 <script type="text/javascript" src="js/damu.js"></script>
 <script type="text/javascript">
-    window.onload=function(){
-        document.addEventListener('touchstart',function(ev){
+    window.onload = function () {
+        document.addEventListener('touchstart', function (ev) {
             ev.preventDefault()
-        },{passive:false});
-        (function(){
-            var styleNode=document.createElement('style')
-            var w=document.documentElement.clientWidth/16
-            styleNode.innerHTML='html{font-size:'+w+'px!important}'
+        }, { passive: false });
+        (function () {
+            var styleNode = document.createElement('style')
+            var w = document.documentElement.clientWidth / 16
+            styleNode.innerHTML = 'html{font-size:' + w + 'px!important}'
             document.head.appendChild(styleNode)
         })();
 
         drag();
-        function drag(){
-            var wrap=document.querySelector("#wrap .content .nav");
-            var item=document.querySelector("#wrap .content .nav .list");
+        function drag() {
+            var wrap = document.querySelector("#wrap .content .nav");
+            var item = document.querySelector("#wrap .content .nav .list");
 
             //手指一开始的位置
-            var startX=0;
+            var startX = 0;
             // 元素的初始位置
-            var elementX=0;
+            var elementX = 0;
             // ul的translateX样式的最小值
-            var minX=wrap.clientWidth-item.offsetWidth;
-            wrap.addEventListener("touchstart",function(ev){
-                var touchC=ev.changedTouches[0];
-                startX=touchC.clientX;
-                elementX=damu.css(item,"translateX");
-                item.style.transition="none";
+            var minX = wrap.clientWidth - item.offsetWidth;
+
+            // 快速滑屏的参数
+            var lastTime = 0;
+            var lastPoint = 0;
+            // 时间间隔
+            var timeDis=1;
+            // 距离
+            var pointDis=0;
+            wrap.addEventListener("touchstart", function (ev) {
+                var touchC = ev.changedTouches[0];
+                startX = touchC.clientX;
+                elementX = damu.css(item, "translateX");
+                item.style.transition = "none";
+                // 获取当前的时间
+                lastTime = new Date().getTime();
+                // 获取当前的位置
+                lastPoint = damu.css(item, "translateX");
+                pointDis=0;
             });
-            wrap.addEventListener("touchmove",function(ev){
-                var touchC=ev.changedTouches[0];
-                var nowX=touchC.clientX;
-                disX=nowX-startX;
-                var translateX=elementX+disX;
+            wrap.addEventListener("touchmove", function (ev) {
+                var touchC = ev.changedTouches[0];
+                var nowX = touchC.clientX;
+                disX = nowX - startX;
+                var translateX = elementX + disX;
                 // 橡皮筋效果
-                if (translateX>0) {
+                if (translateX > 0) {
                     // var scale=1-translateX/document.documentElement.clientWidth;
-                    var scale=document.documentElement.clientWidth/(document.documentElement.clientWidth+translateX);
-                    translateX=elementX+disX*scale;
+                    var scale = document.documentElement.clientWidth / (document.documentElement.clientWidth + translateX);
+                    translateX = elementX + disX * scale;
                     // translateX=0;
-                } else if (translateX<minX) {
+                } else if (translateX < minX) {
                     // translateX=minX;
-                    var over=minX-translateX;
-                    var scale=document.documentElement.clientWidth/(document.documentElement.clientWidth+over);
-                    translateX=elementX+disX*scale;
-                } 
-                damu.css(item,"translateX",translateX);
-            });
-            wrap.addEventListener("touchend",function(ev){
-                var translateX=damu.css(item,"translateX");
-                item.style.transition="1s transform";
-                if (translateX>0) {
-                    translateX=0;
-                    damu.css(item,"translateX",translateX);
-                }else if (translateX<minX) {
-                    translateX=minX;
-                    damu.css(item,"translateX",translateX);
+                    var over = minX - translateX;
+                    var scale = document.documentElement.clientWidth / (document.documentElement.clientWidth + over);
+                    translateX = elementX + disX * scale;
                 }
+                damu.css(item, "translateX", translateX);
+                // 获取当前的时间
+                var nowTime = new Date().getTime();
+                // 获取当前的位置
+                var nowPoint = damu.css(item,"translateX");
+                timeDis=nowTime-lastTime;
+                pointDis=nowPoint-lastPoint;
+                lastTime=nowTime;
+                lastPoint=nowPoint;
+            });
+            wrap.addEventListener("touchend", function (ev) {
+                var translateX = damu.css(item, "translateX");
+                var speed=pointDis/timeDis; 
+                speed=Math.abs(speed)<0.5 ? 0 : speed;
+                var targetX=translateX+speed*200;
+
+                var time=Math.abs(speed)*0.2;
+                time=time<0.8 ? 0.8 : time;
+                time=time>2 ? 2 : time;
+
+
+                var bsr="";
+                
+                if (targetX > 0) {
+                    targetX = 0;
+                    bsr="cubic-bezier(.26,1.51,.68,1.54)";
+                } else if (targetX < minX) {
+                    targetX = minX;
+                    bsr="cubic-bezier(.26,1.51,.68,1.54)";
+                }
+                item.style.transition = time+"s "+bsr+" transform";
+                damu.css(item, "translateX", targetX);
             });
         }
 
         changeFocus();
-        function changeFocus(){
-            var inputText=document.querySelector("#wrap .head .head-bottom form input[type='text']");
-            inputText.addEventListener("touchstart",function(ev){
+        function changeFocus() {
+            var inputText = document.querySelector("#wrap .head .head-bottom form input[type='text']");
+            inputText.addEventListener("touchstart", function (ev) {
                 //获得焦点
                 this.focus();
                 //阻止冒泡
@@ -203,44 +239,45 @@
                 //阻止默认行为
                 ev.preventDefault();
             })
-            document.addEventListener("touchstart",function(){
+            document.addEventListener("touchstart", function () {
                 //失去焦点
                 inputText.blur();
             })
         }
 
         CMCFMenuBtn();
-        function CMCFMenuBtn(){
-            var menuBtn=document.querySelector("#wrap .head .head-top .menuBtn");
-            var mask=document.querySelector("#wrap .head .mask");
+        function CMCFMenuBtn() {
+            var menuBtn = document.querySelector("#wrap .head .head-top .menuBtn");
+            var mask = document.querySelector("#wrap .head .mask");
             //isXX为false表示频道按钮
             //isXX为true表示XX按钮
-            var isXX=false;
-            menuBtn.addEventListener("touchstart",function(ev){
-                var touchC=ev.changedTouches[0];
+            var isXX = false;
+            menuBtn.addEventListener("touchstart", function (ev) {
+                var touchC = ev.changedTouches[0];
                 if (!isXX) {
-                    tools.addClass(menuBtn,"active");
-                    mask.style.display="block";
-                }else{
-                    tools.removeClass(menuBtn,"active");
-                    mask.style.display="none";
+                    tools.addClass(menuBtn, "active");
+                    mask.style.display = "block";
+                } else {
+                    tools.removeClass(menuBtn, "active");
+                    mask.style.display = "none";
                 }
-                isXX=!isXX;
+                isXX = !isXX;
                 ev.stopPropagation();
                 ev.preventDefault();
             })
-            document.addEventListener("touchstart",function(){
-                if (isXX==true) {
-                    tools.removeClass(menuBtn,"active");
-                    mask.style.display="none";
-                    isXX=!isXX;
+            document.addEventListener("touchstart", function () {
+                if (isXX == true) {
+                    tools.removeClass(menuBtn, "active");
+                    mask.style.display = "none";
+                    isXX = !isXX;
                 }
             })
-            mask.addEventListener("touchstart",function(ev){
+            mask.addEventListener("touchstart", function (ev) {
                 ev.stopPropagation();
                 ev.preventDefault();
             })
         }
     }
 </script>
+
 </html>
