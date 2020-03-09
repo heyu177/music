@@ -74,7 +74,7 @@
             </ul>
         </div>
         <div class="content">
-            <div class="nav">
+            <div class="damu-nav-drag-wrapper">
                 <ul class="list">
                     <li class="active">
                         <a href="javascript:">首页</a>
@@ -129,6 +129,9 @@
                     </li>
                 </ul>
             </div>
+            <div class="carousel-wrap" needAuto needCarousel>
+                <div class="points-wrap"></div>
+            </div>
         </div>
     </div>
 </body>
@@ -146,86 +149,15 @@
             document.head.appendChild(styleNode)
         })();
 
+        swipe();
+        function swipe() {
+            var arr = ['img/1.jpg', 'img/2.jpg', 'img/3.jpg', 'img/4.jpg', 'img/5.jpg']
+            damu.carousel(arr)
+        }
+
         drag();
-        function drag() {
-            var wrap = document.querySelector("#wrap .content .nav");
-            var item = document.querySelector("#wrap .content .nav .list");
-
-            //手指一开始的位置
-            var startX = 0;
-            // 元素的初始位置
-            var elementX = 0;
-            // ul的translateX样式的最小值
-            var minX = wrap.clientWidth - item.offsetWidth;
-
-            // 快速滑屏的参数
-            var lastTime = 0;
-            var lastPoint = 0;
-            // 时间间隔
-            var timeDis=1;
-            // 距离
-            var pointDis=0;
-            wrap.addEventListener("touchstart", function (ev) {
-                var touchC = ev.changedTouches[0];
-                startX = touchC.clientX;
-                elementX = damu.css(item, "translateX");
-                item.style.transition = "none";
-                // 获取当前的时间
-                lastTime = new Date().getTime();
-                // 获取当前的位置
-                lastPoint = damu.css(item, "translateX");
-                pointDis=0;
-            });
-            wrap.addEventListener("touchmove", function (ev) {
-                var touchC = ev.changedTouches[0];
-                var nowX = touchC.clientX;
-                disX = nowX - startX;
-                var translateX = elementX + disX;
-                // 橡皮筋效果
-                if (translateX > 0) {
-                    // var scale=1-translateX/document.documentElement.clientWidth;
-                    var scale = document.documentElement.clientWidth / (document.documentElement.clientWidth + translateX);
-                    translateX = elementX + disX * scale;
-                    // translateX=0;
-                } else if (translateX < minX) {
-                    // translateX=minX;
-                    var over = minX - translateX;
-                    var scale = document.documentElement.clientWidth / (document.documentElement.clientWidth + over);
-                    translateX = elementX + disX * scale;
-                }
-                damu.css(item, "translateX", translateX);
-                // 获取当前的时间
-                var nowTime = new Date().getTime();
-                // 获取当前的位置
-                var nowPoint = damu.css(item,"translateX");
-                timeDis=nowTime-lastTime;
-                pointDis=nowPoint-lastPoint;
-                lastTime=nowTime;
-                lastPoint=nowPoint;
-            });
-            wrap.addEventListener("touchend", function (ev) {
-                var translateX = damu.css(item, "translateX");
-                var speed=pointDis/timeDis; 
-                speed=Math.abs(speed)<0.5 ? 0 : speed;
-                var targetX=translateX+speed*200;
-
-                var time=Math.abs(speed)*0.2;
-                time=time<0.8 ? 0.8 : time;
-                time=time>2 ? 2 : time;
-
-
-                var bsr="";
-                
-                if (targetX > 0) {
-                    targetX = 0;
-                    bsr="cubic-bezier(.26,1.51,.68,1.54)";
-                } else if (targetX < minX) {
-                    targetX = minX;
-                    bsr="cubic-bezier(.26,1.51,.68,1.54)";
-                }
-                item.style.transition = time+"s "+bsr+" transform";
-                damu.css(item, "translateX", targetX);
-            });
+        function drag(){
+            damu.dragNav();
         }
 
         changeFocus();
