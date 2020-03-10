@@ -152,6 +152,30 @@
         changeColor();
         // 点击改变导航的颜色
         function changeColor() {
+            var list = document.querySelector(".damu-nav-drag-wrapper .list");
+            var liNodes = document.querySelectorAll(".damu-nav-drag-wrapper .list > li");
+            list.addEventListener("touchstart",function(){
+                this.isMove=false;
+            });
+            list.addEventListener("touchmove",function(){
+                this.isMove=true;
+            });
+            list.addEventListener("touchend", function (ev) {
+                if (this.isMove) {
+                    return;
+                }
+                for (let i = 0; i < liNodes.length; i++) {
+                    tools.removeClass(liNodes[i], "active");
+                }
+                if (ev.target.tagName.toUpperCase()=="A") {
+                    tools.addClass(ev.target.parentNode,"active");
+                }else if (ev.target.tagName.toUpperCase()=="LI") {
+                    tools.addClass(ev.target,"active");
+                }
+            });
+        }
+        // 点击改变导航的颜色
+        /* function changeColor() {
             var liNodes = document.querySelectorAll(".damu-nav-drag-wrapper .list > li");
             for (let i = 0; i < liNodes.length; i++) {
                 liNodes[i].addEventListener("touchstart", function () {
@@ -169,7 +193,7 @@
                     }
                 });
             }
-        }
+        } */
 
         swipe();
         function swipe() {
