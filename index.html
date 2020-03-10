@@ -149,6 +149,28 @@
             document.head.appendChild(styleNode)
         })();
 
+        changeColor();
+        // 点击改变导航的颜色
+        function changeColor() {
+            var liNodes = document.querySelectorAll(".damu-nav-drag-wrapper .list > li");
+            for (let i = 0; i < liNodes.length; i++) {
+                liNodes[i].addEventListener("touchstart", function () {
+                    this.isMove = false;
+                });
+                liNodes[i].addEventListener("touchmove", function () {
+                    this.isMove = true;
+                });
+                liNodes[i].addEventListener("touchend", function () {
+                    if (!this.isMove) {
+                        for (let i = 0; i < liNodes.length; i++) {
+                            tools.removeClass(liNodes[i], "active");
+                        }
+                        tools.addClass(this, "active");
+                    }
+                });
+            }
+        }
+
         swipe();
         function swipe() {
             var arr = ['img/1.jpg', 'img/2.jpg', 'img/3.jpg', 'img/4.jpg', 'img/5.jpg']
@@ -156,7 +178,7 @@
         }
 
         drag();
-        function drag(){
+        function drag() {
             damu.dragNav();
         }
 

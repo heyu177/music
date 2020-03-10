@@ -79,12 +79,19 @@
 
             //手指一开始的位置
             var startX = 0;
+            var startY = 0;
             //元素一开始的位置
             var elementX = 0;
+            var elementY = 0;
             //滑动的距离
-            var disX = 0
+            var disX = 0;
+            var disY = 0;
+            // 第一次touchmove的方向
+            var isX = true;
+            // 是否是第一次touchmove
+            var isFirst = true;
             //图片下标
-            var index = 0
+            var index = 0;
             //translateX的偏移量与offsetLeft不在一个图层
             // var translateX=0
             carouselWrap.addEventListener('touchstart', function (ev) {
@@ -100,16 +107,33 @@
                     }
                     damu.css(ulNode, 'translateX', index * document.documentElement.offsetWidth)
                 }
-                var touchC = ev.changedTouches[0]
-                startX = touchC.clientX
-                elementX = damu.css(ulNode, 'translateX')
+                var touchC = ev.changedTouches[0];
+                startX = touchC.clientX;
+                startY = touchC.clientY;
+                elementX = damu.css(ulNode, 'translateX');
+                elementY = damu.css(ulNode, "translateY");
                 //清除定时器
                 clearInterval(timer)
             })
             carouselWrap.addEventListener('touchmove', function (ev) {
+                // 在Y轴上滑动
+                if (!isX) {
+                    return;
+                }
                 var touchC = ev.changedTouches[0]
                 var nowX = touchC.clientX
-                disX = nowX - startX
+                var nowY = touchC.clientY;
+                disX = nowX - startX;
+                disY = nowY - startY;
+                // 第一次touchmove
+                if (isFirst) {
+                    isFirst = false;
+                    // 手指在Y轴上滑的多
+                    if (Math.abs(disY) > Math.abs(disX)) {
+                        isX = false;
+                        return;
+                    }
+                }
                 // translateX=elementX+disX
                 // ulNode.style.left=elementX+disX+'px'
                 // ulNode.style.transform='translateX('+translateX+'px)'
@@ -141,6 +165,8 @@
                     //开启自动轮播
                     auto()
                 }
+                isX = true;
+                isFirst=true;
             })
             var timer = 0
             var needAuto = carouselWrap.getAttribute('needAuto')
@@ -211,7 +237,7 @@
         wrap.addEventListener("touchmove", function (ev) {
             var touchC = ev.changedTouches[0];
             var nowX = touchC.clientX;
-            disX = nowX - startX;
+            var disX = nowX - startX;
             var translateX = elementX + disX;
 
             // 获取当前的时间
