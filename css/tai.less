@@ -53,6 +53,7 @@ img {
 @import "mixin/1-px.less";
 @import "components/carousel.less";
 @import "components/nav.less";
+@import "extend/clearfix.less";
 
 #wrap {
     height    : 100%;
@@ -185,12 +186,13 @@ img {
     }
 
     .content {
-        background: pink;
+        background: #eee;
         position  : absolute;
         top       : 270/@rem;
         left      : 0;
         right     : 0;
         bottom    : 0;
+        overflow: auto;
 
         .tab-wrap {
             width     : 1046/@rem;
@@ -238,6 +240,7 @@ img {
 
             .tab-content {
                 ul {
+                    &:extend(.clearfix all);
                     li {
                         box-sizing: border-box;
                         width     : 506/@rem;
@@ -247,6 +250,7 @@ img {
                         background: #efefef;
                         color     : #000;
                         overflow: hidden;
+                        float: left;
                         a{
                             img{
                                 width: 100%;

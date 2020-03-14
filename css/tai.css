@@ -135,6 +135,16 @@ img {
 .damu-nav-drag-wrapper .list > li.active a {
   color: #fff;
 }
+.clearfix,
+#wrap .content .tab-wrap .tab-content ul {
+  *zoom: 1;
+}
+.clearfix:after,
+#wrap .content .tab-wrap .tab-content ul:after {
+  content: "";
+  display: block;
+  clear: both;
+}
 #wrap {
   height: 100%;
   overflow: hidden;
@@ -278,12 +288,13 @@ img {
   color: white;
 }
 #wrap .content {
-  background: pink;
+  background: #eee;
   position: absolute;
   top: 4rem;
   left: 0;
   right: 0;
   bottom: 0;
+  overflow: auto;
 }
 #wrap .content .tab-wrap {
   width: 15.4962963rem;
@@ -332,6 +343,7 @@ img {
   background: #efefef;
   color: #000;
   overflow: hidden;
+  float: left;
 }
 #wrap .content .tab-wrap .tab-content ul li a img {
   width: 100%;
