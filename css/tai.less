@@ -192,12 +192,12 @@ img {
         left      : 0;
         right     : 0;
         bottom    : 0;
-        overflow: auto;
-
+        
         .tab-wrap {
             width     : 1046/@rem;
             background: #fff;
             margin    : 0 auto;
+            overflow: hidden;
 
             .tab-head {
                 height     : 135/@rem;
@@ -239,8 +239,12 @@ img {
             }
 
             .tab-content {
+                width: 300%;
+                &:extend(.clearfix all);
                 ul {
                     &:extend(.clearfix all);
+                    float: left;
+                    width: 33.3333%;
                     li {
                         box-sizing: border-box;
                         width     : 506/@rem;
@@ -288,6 +292,10 @@ img {
                             }
                         }
                     }
+                }
+                .tab-loading{
+                    background: url(../img/loading.gif) center center no-repeat;
+                    height: 10rem;
                 }
             }
         }
