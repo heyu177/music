@@ -404,6 +404,8 @@
                 var elementPoint={x:0,y:0};
                 var isX=true;
                 var isFirst=true;
+                // 是否过1/2，停止拖动，并跳转
+                var isOver=false;
                 content.addEventListener("touchstart",function(ev){
                     var touchC=ev.changedTouches[0];
                     startPoint.x=touchC.clientX;
@@ -412,8 +414,14 @@
                     elementPoint.y=damu.css(content,"translateY");
                     isX=true;
                     isFirst=true;
+                    // 清除过渡
+                    content.style.transition="none";
+                    isOver=false;
                 });
                 content.addEventListener("touchmove",function(ev){
+                    if (isOver) {
+                        return;
+                    }
                     if (!isX) {
                         return;
                     }
@@ -433,10 +441,44 @@
                             return;
                         }
                     }
+                    jump(dis.x);
                 });
                 content.addEventListener("touchend",function(ev){
-
+                    var touchC=ev.changedTouches[0];
+                    var nowPoint={x:0,y:0};
+                    var dis={x:0,y:0};
+                    nowPoint.x=touchC.clientX;
+                    dis.x=nowPoint.x-startPoint.x;
+                    if (Math.abs(dis.x)<=w/2) {
+                        content.style.transition="2s transform";
+                        damu.css(content,"translateX",-w);
+                    }
                 });
+
+                // 实现拖动时跳转
+                function jump(disX){
+                    if (isOver) {
+                        return;
+                    }
+                    if (Math.abs(disX)>w/2) {
+                        isOver=true;
+                        content.style.transition="2s transform";
+                        /* if (disX>0) {
+                            damu.css(content,"translateX",0);
+                        }else{
+                            damu.css(content,"translateX",-2*w);
+                        } */
+                        var targetX=disX>0 ? 0 : -2*w;
+                        damu.css(content,"translateX",targetX);
+
+                        content.addEventListener("transitionend",endFn);
+                        content.addEventListener("webkitTransitionEnd",endFn);
+
+                        function endFn(){
+
+                        }
+                    }
+                }
             }
         }
 
