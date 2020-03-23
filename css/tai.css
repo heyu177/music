@@ -296,6 +296,7 @@ img {
   left: 0;
   right: 0;
   bottom: 0;
+  overflow: auto;
 }
 #wrap .content .tab-wrap {
   width: 15.4962963rem;
@@ -335,6 +336,7 @@ img {
   position: absolute;
   left: 0;
   bottom: 0.14814815rem;
+  transition: 1s transform,1s width;
 }
 #wrap .content .tab-wrap .tab-content {
   width: 300%;
@@ -389,4 +391,5 @@ img {
 #wrap .content .tab-wrap .tab-content .tab-loading {
   background: url(../img/loading.gif) center center no-repeat;
   height: 10rem;
+  opacity: 0;
 }
