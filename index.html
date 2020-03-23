@@ -433,10 +433,19 @@
                             return;
                         }
                     }
+                    jump(dis.x);
                 });
                 content.addEventListener("touchend",function(ev){
-
+                    
                 });
+
+                function jump(disX){
+                    if (Math.abs(damu.css(content,"translateX"))>w/2) {
+                        if (disX>0) {
+                            damu.css(content,"translateX",0);
+                        }
+                    }
+                }
             }
         }
 
