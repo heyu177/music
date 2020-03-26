@@ -166,7 +166,7 @@
                     auto()
                 }
                 isX = true;
-                isFirst=true;
+                isFirst = true;
             })
             var timer = 0
             var needAuto = carouselWrap.getAttribute('needAuto')
@@ -300,6 +300,105 @@
                     translateX = minX;
                 }
                 damu.css(item, "translateX", translateX);
+                item.style.transition = "1s transform";
+            }
+        });
+    }
+    w.damu.vMove = function (wrap) {
+        var item = wrap.children[0];
+
+        //手指一开始的位置
+        var startY = 0;
+        // 元素的初始位置
+        var elementY = 0;
+        // ul的translateY样式的最小值
+        var minY = wrap.clientHeight - item.offsetHeight;
+
+        // 快速滑屏的参数
+        var lastTime = 0;
+        var lastPoint = 0;
+        // 时间间隔
+        var timeDis = 1;
+        // 距离
+        var pointDis = 0;
+        wrap.addEventListener("touchstart", function (ev) {
+            var touchC = ev.changedTouches[0];
+            startY = touchC.clientY;
+            elementY = damu.css(item, "translateY");
+            item.style.transition = "none";
+            // 获取当前的时间
+            lastTime = new Date().getTime();
+            // 获取手指的位置
+            lastPoint = touchC.clientY;
+            pointDis = 0;
+            item.handMove = false;
+        });
+        wrap.addEventListener("touchmove", function (ev) {
+            var touchC = ev.changedTouches[0];
+            var nowY = touchC.clientY;
+            var disY = nowY - startY;
+            var translateY = elementY + disY;
+
+            // 获取当前的时间
+            var nowTime = new Date().getTime();
+            // 获取手指的位置
+            var nowPoint = touchC.clientY;
+            timeDis = nowTime - lastTime;
+            pointDis = nowPoint - lastPoint;
+            lastTime = nowTime;
+            lastPoint = nowPoint;
+
+            // 橡皮筋效果
+            if (translateY > 0) {
+                // 表示手动橡皮筋效果
+                item.handMove = true;
+                // var scale=1-translateY/document.documentElement.clientHeight;
+                var scale = document.documentElement.clientHeight / (document.documentElement.clientHeight + translateY);
+                translateY = damu.css(item, "translateY") + pointDis * scale;
+                // translateY=0;
+            } else if (translateY < minY) {
+                item.handMove = true;
+                // translateY=minY;
+                var over = minY - translateY;
+                var scale = document.documentElement.clientHeight / (document.documentElement.clientHeight + over);
+                translateY = damu.css(item, "translateY") + pointDis * scale;
+            }
+            damu.css(item, "translateY", translateY);
+
+        });
+        wrap.addEventListener("touchend", function (ev) {
+            if (!item.handMove) {
+                /* 快速滑屏 */
+                var translateY = damu.css(item, "translateY");
+                var speed = pointDis / timeDis;
+                speed = Math.abs(speed) < 0.5 ? 0 : speed;
+                var targetY = translateY + speed * 200;
+
+                var time = Math.abs(speed) * 0.2;
+                time = time < 0.8 ? 0.8 : time;
+                time = time > 2 ? 2 : time;
+
+
+                var bsr = "";
+
+                if (targetY > 0) {
+                    targetY = 0;
+                    bsr = "cubic-bezier(.26,1.51,.68,1.54)";
+                } else if (targetY < minY) {
+                    targetY = minY;
+                    bsr = "cubic-bezier(.26,1.51,.68,1.54)";
+                }
+                // 回弹效果
+                item.style.transition = time + "s " + bsr + " transform";
+                damu.css(item, "translateY", targetY);
+            } else {
+                var translateY = damu.css(item, "translateY");
+                if (translateY > 0) {
+                    translateY = 0;
+                } else if (translateY < minY) {
+                    translateY = minY;
+                }
+                damu.css(item, "translateY", translateY);
                 item.style.transition = "1s transform";
             }
         });
