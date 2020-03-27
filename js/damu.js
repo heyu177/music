@@ -307,10 +307,12 @@
     w.damu.vMove = function (wrap) {
         var item = wrap.children[0];
 
+        damu.css(item,"translateZ",0.1);
+
         //手指一开始的位置
-        var startY = 0;
+        var startY = {};
         // 元素的初始位置
-        var elementY = 0;
+        var elementY = {};
         // ul的translateY样式的最小值
         var minY = wrap.clientHeight - item.offsetHeight;
 
@@ -321,10 +323,16 @@
         var timeDis = 1;
         // 距离
         var pointDis = 0;
+        // 是否沿Y轴滑屏
+        var isY=true;
+        // 是否第一次出发touchmove
+        var isFirst=true;
         wrap.addEventListener("touchstart", function (ev) {
             var touchC = ev.changedTouches[0];
-            startY = touchC.clientY;
-            elementY = damu.css(item, "translateY");
+            start = {clientX:touchC.clientX,clientY:touchC.clientY};
+            element={};
+            element.y = damu.css(item, "translateY");
+            element.x=damu.css(item, "translateX");
             item.style.transition = "none";
             // 获取当前的时间
             lastTime = new Date().getTime();
@@ -332,13 +340,27 @@
             lastPoint = touchC.clientY;
             pointDis = 0;
             item.handMove = false;
+            isY=true;
+            isFirst=true;
         });
         wrap.addEventListener("touchmove", function (ev) {
+            if (!isY) {
+                return;
+            }
             var touchC = ev.changedTouches[0];
-            var nowY = touchC.clientY;
-            var disY = nowY - startY;
-            var translateY = elementY + disY;
+            var now = touchC;
+            var dis = {};
+            dis.y=now.clientY-start.clientY;
+            dis.x=now.clientX-start.clientX;
+            var translateY = element.y + dis.y;
 
+            if (isFirst) {
+                isFirst=false;
+                if (Math.abs(dis.x)>Math.abs(dis.y)) {
+                    isY=false;
+                    return;
+                }
+            }
             // 获取当前的时间
             var nowTime = new Date().getTime();
             // 获取手指的位置
@@ -374,9 +396,9 @@
                 speed = Math.abs(speed) < 0.5 ? 0 : speed;
                 var targetY = translateY + speed * 200;
 
-                var time = Math.abs(speed) * 0.2;
+                var time = Math.abs(speed) * 0.2*10;
                 time = time < 0.8 ? 0.8 : time;
-                time = time > 2 ? 2 : time;
+                // time = time > 2 ? 2 : time;
 
 
                 var bsr = "";
