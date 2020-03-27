@@ -30,7 +30,7 @@
     window.onload=function(){
         document.addEventListener("touchstart",function(ev){
             ev.preventDefault();
-        });
+        },{passive:false});
         var wrap=document.querySelector("#wrap");
         var content=document.querySelector("#wrap .content");
         for (let i = 0; i < 200; i++) {
