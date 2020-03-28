@@ -327,6 +327,15 @@
         var isY=true;
         // 是否第一次出发touchmove
         var isFirst=true;
+        // 即点即停
+        var clearTime=0;
+        var Tween={
+            Linear:function(t,b,c,d){ return c*t/d + b; },
+            Back: function(t,b,c,d,s){
+                if (s == undefined) s = 1.70158;
+                return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
+            }
+        }
         wrap.addEventListener("touchstart", function (ev) {
             var touchC = ev.changedTouches[0];
             start = {clientX:touchC.clientX,clientY:touchC.clientY};
@@ -342,6 +351,7 @@
             item.handMove = false;
             isY=true;
             isFirst=true;
+            clearInterval(clearTime);
         });
         wrap.addEventListener("touchmove", function (ev) {
             if (!isY) {
@@ -401,18 +411,21 @@
                 // time = time > 2 ? 2 : time;
 
 
-                var bsr = "";
-
+                // var bsr = "";
+                var type="Linear";
                 if (targetY > 0) {
                     targetY = 0;
-                    bsr = "cubic-bezier(.26,1.51,.68,1.54)";
+                    // bsr = "cubic-bezier(.26,1.51,.68,1.54)";
+                    type="Back";
                 } else if (targetY < minY) {
                     targetY = minY;
-                    bsr = "cubic-bezier(.26,1.51,.68,1.54)";
+                    // bsr = "cubic-bezier(.26,1.51,.68,1.54)";
+                    type="Back";
                 }
                 // 回弹效果
-                item.style.transition = time + "s " + bsr + " transform";
-                damu.css(item, "translateY", targetY);
+                bsr(type,targetY,time);
+                // item.style.transition = time + "s " + bsr + " transform";
+                // damu.css(item, "translateY", targetY);
             } else {
                 var translateY = damu.css(item, "translateY");
                 if (translateY > 0) {
@@ -424,5 +437,24 @@
                 item.style.transition = "1s transform";
             }
         });
+        function bsr(type,targetY,time){
+            clearInterval(clearTime);
+            // 当前次数
+            var t=0;
+            // 初始位置
+            var b=damu.css(item,"translateY");
+            // 最终位置-初始位置
+            var c=targetY-b;
+            // 总次数
+            var d=time*1000/(1000/60);
+            clearTime=setInterval(function(){
+                t++;
+                if (t>d) {
+                    clearInterval(clearTime);
+                }
+                var point=Tween[type](t,b,c,d);
+                damu.css(item,"translateY",point);
+            },1000/60);
+        }
     }
 })(window)
