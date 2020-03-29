@@ -304,7 +304,7 @@
             }
         });
     }
-    w.damu.vMove = function (wrap) {
+    w.damu.vMove = function (wrap,callBack) {
         var item = wrap.children[0];
 
         damu.css(item,"translateZ",0.1);
@@ -352,6 +352,9 @@
             isY=true;
             isFirst=true;
             clearInterval(clearTime);
+            if (callBack&&typeof callBack["start"]=="function") {
+                callBack["start"].call(item);
+            }
         });
         wrap.addEventListener("touchmove", function (ev) {
             if (!isY) {
@@ -396,7 +399,9 @@
                 translateY = damu.css(item, "translateY") + pointDis * scale;
             }
             damu.css(item, "translateY", translateY);
-
+            if (callBack&&typeof callBack["move"]=="function") {
+                callBack["move"].call(item);
+            }
         });
         wrap.addEventListener("touchend", function (ev) {
             if (!item.handMove) {
@@ -435,6 +440,9 @@
                 }
                 damu.css(item, "translateY", translateY);
                 item.style.transition = "1s transform";
+                if (callBack&&typeof callBack["end"]=="function") {
+                    callBack["end"].call(item);
+                }
             }
         });
         function bsr(type,targetY,time){
@@ -451,6 +459,12 @@
                 t++;
                 if (t>d) {
                     clearInterval(clearTime);
+                    if (callBack&&typeof callBack["end"]=="function") {
+                        callBack["end"].call(item);
+                    }
+                }
+                if (callBack&&typeof callBack["move"]=="function") {
+                    callBack["move"].call(item);
                 }
                 var point=Tween[type](t,b,c,d);
                 damu.css(item,"translateY",point);

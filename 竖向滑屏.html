@@ -18,11 +18,23 @@
         height: 100%;
         overflow: hidden;
         background: pink;
+        position: relative;
+    }
+    #wrap .scrollBar{
+        width: 4px;
+        height: 100%;
+        background: deeppink;
+        position: absolute;
+        top: 0;
+        right: 0;
+        opacity: 0;
+        transition: 1s opacity;
     }
 </style>
 <body>
     <div id="wrap">
         <div class="content"></div>
+        <div class="scrollBar"></div>
     </div>
 </body>
 <script type="text/javascript" src="js/damu.js"></script>
@@ -36,7 +48,24 @@
         for (let i = 0; i < 200; i++) {
             content.innerHTML+=i+" wdy<br>";
         }
-        damu.vMove(wrap);
+
+        var bar=document.querySelector("#wrap .scrollBar");
+        var content=document.querySelector("#wrap .content");
+        bar.style.height=(document.documentElement.clientHeight/content.offsetHeight)*document.documentElement.clientHeight+"px";
+        // 分别在滑屏开始、移动和结束时触发
+        var callBack={
+            start:function(){
+                bar.style.opacity=1;
+            },
+            move:function(){
+                var scale=damu.css(this,"translateY")/(content.offsetHeight-document.documentElement.clientHeight);
+                damu.css(bar,"translateY",-scale*(document.documentElement.clientHeight-bar.offsetHeight));
+            },
+            end:function(){
+                bar.style.opacity=0;
+            }
+        }
+        damu.vMove(wrap,callBack);
     }
 </script>
 </html>
