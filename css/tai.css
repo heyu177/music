@@ -154,6 +154,17 @@ img {
   font-size: 0.23703704rem;
   position: relative;
 }
+#wrap .scrollBar {
+  width: 4px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: deeppink;
+  z-index: 2;
+  transition: 1s opacity;
+  opacity: 0;
+}
 #wrap .head {
   position: absolute;
   width: 100%;
@@ -296,7 +307,7 @@ img {
   left: 0;
   right: 0;
   bottom: 0;
-  overflow: auto;
+  overflow: hidden;
 }
 #wrap .content .tab-wrap {
   width: 15.4962963rem;

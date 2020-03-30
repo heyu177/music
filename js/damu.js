@@ -314,7 +314,7 @@
         // 元素的初始位置
         var elementY = {};
         // ul的translateY样式的最小值
-        var minY = wrap.clientHeight - item.offsetHeight;
+        var minY = 0;
 
         // 快速滑屏的参数
         var lastTime = 0;
@@ -337,6 +337,8 @@
             }
         }
         wrap.addEventListener("touchstart", function (ev) {
+            // ul的translateY样式的最小值
+            minY = wrap.clientHeight - item.offsetHeight;
             var touchC = ev.changedTouches[0];
             start = {clientX:touchC.clientX,clientY:touchC.clientY};
             element={};
@@ -411,7 +413,7 @@
                 speed = Math.abs(speed) < 0.5 ? 0 : speed;
                 var targetY = translateY + speed * 200;
 
-                var time = Math.abs(speed) * 0.2*10;
+                var time = Math.abs(speed) * 0.2;
                 time = time < 0.8 ? 0.8 : time;
                 // time = time > 2 ? 2 : time;
 
